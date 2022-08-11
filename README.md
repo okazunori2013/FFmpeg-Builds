@@ -1,25 +1,5 @@
 # FFmpeg Static Auto-Builds
 
-
-This repository provides static Windows (x86 and x86_64) and Linux (x86_64, arm64) Builds of [FFmpeg master](https://github.com/FFmpeg/FFmpeg) and [latest release branch](https://github.com/FFmpeg/FFmpeg/tree/release/4.4) **with some patches necessary for smooth integration with [yt-dlp](https://github.com/yt-dlp/yt-dlp)**
-
-**Note**: The builds provided are only meant to be used with yt-dlp and any unrelated issues/patches will be rejected
-
-
-## Downloads
-
-[![Linux x64 GPL master](https://img.shields.io/badge/-Linux_x64-red.svg?style=for-the-badge&logo=linux)](https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz "Linux x64 GPL master")
-[![Linux ARM64 GPL master](https://img.shields.io/badge/-Linux_ARM64-red.svg?style=for-the-badge&logo=linux)](https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz "Linux ARM64 GPL master")
-[![Windows x64 GPL master](https://img.shields.io/badge/-Windows_x64-blue.svg?style=for-the-badge&logo=windows)](https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip "Windows x64 GPL master")
-[![Windows x86 GPL master](https://img.shields.io/badge/-Windows_x86-9cf.svg?style=for-the-badge&logo=windows)](https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win32-gpl.zip "Windows x86 GPL master")
-[![Other variants](https://img.shields.io/badge/-Other-grey.svg?style=for-the-badge)](https://github.com/yt-dlp/FFmpeg-Builds/wiki/Latest "All variants")
-[![Other versions](https://img.shields.io/badge/-Old_Versions-lightgrey.svg?style=for-the-badge)](https://github.com/yt-dlp/FFmpeg-Builds/releases "All releases")
-
----
-
-
-
-
 ## Patches Welcome
 Known issues for which patches are welcome:
 
@@ -107,3 +87,35 @@ and merged in a series of commits:
 ---
 
 PS: The commits are unsigned because of the periodic [automatic rebase](https://github.com/yt-dlp/FFmpeg-Builds/actions/workflows/rebase-on-upstream.yml)
+
+### Build FFmpeg
+
+* `./build.sh target variant [addins]`
+
+On success, the resulting zip file will be in the `artifacts` subdir.
+
+### Targets, Variants and Addins
+
+Available targets:
+* `win64` (x86_64 Windows)
+* `win32` (x86 Windows)
+* `linux64` (x86_64 Linux, glibc>=2.23, linux>=4.4)
+* `linuxarm64` (arm64 (aarch64) Linux, glibc>=2.27, linux>=4.15)
+
+The linuxarm64 target will not build some dependencies due to lack of arm64 (aarch64) architecture support or cross-compiling restrictions.
+
+* `davs2` and `xavs2`: aarch64 support is broken.
+* `libmfx` and `libva`: Library for Intel QSV, so there is no aarch64 support.
+
+Available:
+* `gpl` Includes all dependencies, even those that require full GPL instead of just LGPL.
+* `lgpl` Lacking libraries that are GPL-only. Most prominently libx264 and libx265.
+* `nonfree` Includes fdk-aac in addition to all the dependencies of the gpl variant.
+* `gpl-shared` Same as gpl, but comes with the libav* family of shared libs instead of pure static executables.
+* `lgpl-shared` Same again, but with the lgpl set of dependencies.
+* `nonfree-shared` Same again, but with the nonfree set of dependencies.
+
+All of those can be optionally combined with any combination of addins.
+* `4.4` to build from the 4.4 release branch instead of master.
+* `5.0` to build from the 5.0 release branch instead of master.
+* `debug` to not strip debug symbols from the binaries. This increases the output size by about 250MB.
