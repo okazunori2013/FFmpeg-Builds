@@ -2,7 +2,7 @@ name: Test Full Build
 on:
   pull_request:
     branches:
-      - nonexistent
+      - master
     paths-ignore:
       - '**.md'
       - 'LICENSE'
